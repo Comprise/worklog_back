@@ -8,12 +8,12 @@ edition = "2021"
 [dependencies]
 actix-web = "4.4.0"
 derive_more = "0.99.17"
-chrono = { version = "0.4.30", features = ["serde"] }
+chrono = { version = "0.4.31", features = ["serde"] }
 diesel = { version = "2.1.1", features = ["sqlite", "returning_clauses_for_sqlite_3_35", "r2d2", "chrono"] }
 serde = { version = "1.0.188", features = ["derive"] }
 reqwest = { version = "0.11.20", features = ["json"] }
 iso8601-duration = {version = "0.2.0", features = ["chrono", "serde"]}
-serde_json = "1.0.106"
+serde_json = "1.0.107"
 dotenv = "0.15.0"
 env_logger = "0.10.0"
 oauth2 = "4.4.2"
