@@ -51,6 +51,7 @@ async fn main() -> std::io::Result<()> {
                     .service(routers::auth::auth_callback)
                     .service(routers::auth::refresh)
                     .service(routers::worklog::worklog)
+                    .service(routers::worklog::delete_worklog)
             )
     })
         .workers(5)

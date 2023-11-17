@@ -3,9 +3,10 @@ use crate::middleware::AuthorizationService;
 use crate::config::Config;
 use crate::db::DbPool;
 use crate::models::{DataDurations, Datasets, User, WorklogQuery, YandexToken, DeleteWorklog};
-use crate::worklog::{get_total_count, get_worklog, get_color, get_weekends};
+use crate::worklog::{get_total_count, get_worklog, get_color, get_weekends, del_worklog};
 use std::collections::{BTreeMap, HashMap};
 use chrono::{Duration, NaiveDate};
+use reqwest::StatusCode;
 
 #[get("/worklog")]
 async fn worklog(
@@ -157,15 +158,48 @@ async fn worklog(
     Ok(HttpResponse::Ok().json(datasets_data))
 }
 
-// #[delete("/worklog")]
-// async fn delete_worklog(
-//     pool: web::Data<DbPool>,
-//     config: web::Data<Config>,
-//     auth: AuthorizationService,
-//     data: web::Json<DeleteWorklog>,
-// ) -> Result<impl Responder> {
-//     let pool = pool.into_inner();
-//     let config = config.into_inner();
-//     let data = data.into_inner();
+#[delete("/worklog")]
+async fn delete_worklog(
+    pool: web::Data<DbPool>,
+    config: web::Data<Config>,
+    auth: AuthorizationService,
+    data: web::Json<DeleteWorklog>,
+) -> Result<impl Responder> {
+    let pool = pool.into_inner();
+    let config = config.into_inner();
+    let data = data.into_inner();
 
-// }
+    let pool_clone = pool.clone();
+    let user = web::block(move || {
+        let mut conn = pool_clone.get()?;
+        User::find_by_id(&mut conn, &auth.user_id)
+    })
+        .await?
+        .map_err(|e| error::ErrorInternalServerError(e.to_string()))?
+        .ok_or_else(|| error::ErrorUnauthorized("User not found"))?;
+
+    let pool_clone = pool.clone();
+    let user_clone = user.clone();
+    let token = web::block(move || {
+        let mut conn = pool_clone.get()?;
+        YandexToken::get_by_user_id(&mut conn, &user_clone)
+    })
+        .await?
+        .map_err(|e| error::ErrorInternalServerError(e.to_string()))?;
+
+    let status_code = del_worklog(
+        &config.org_id,
+        &token.access_token,
+        &data.issue,
+        &data.worklog)
+        .await
+        .map_err(|e| error::ErrorInternalServerError(e.to_string()))?;
+
+    println!("{}", status_code.as_str());
+
+    if status_code != StatusCode::NO_CONTENT {
+        Err(error::ErrorInternalServerError("Error"))?
+    };
+
+    Ok(HttpResponse::NoContent())
+}

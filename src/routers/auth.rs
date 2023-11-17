@@ -16,6 +16,7 @@ async fn auth(
         .authorize_url(CsrfToken::new_random)
         .add_scope(Scope::new("login:info".to_string()))
         .add_scope(Scope::new("tracker:read".to_string()))
+        .add_scope(Scope::new("tracker:write".to_string()))
         .url();
     let auth_url = AuthUrl {
         auth_url: auth_url.to_string()

@@ -10,22 +10,22 @@ pub fn get_color() -> String {
     format!("rgba({}, {}, {}, 0.4)", r, g, b)
 }
 
-// pub async fn del_worklog(
-//     org_id: &String,
-//     token: &String,
-//     issue: &String,
-//     worklog: &String)
-//     -> Result<i32, reqwest::Error> {
-//     let client = reqwest::Client::new();
-//     let url = format!("https://api.tracker.yandex.net/v2/issues/{}/worklog/{}", issue, worklog);
-//     Ok(client.delete(url)
-//         .header("X-Org-ID", org_id)
-//         .header("Authorization", format!("OAuth {}", token))
-//         .send()
-//         .await?
-//         .status()
-//     )
-// }
+pub async fn del_worklog(
+    org_id: &String,
+    token: &String,
+    issue: &String,
+    worklog: &i32)
+    -> Result<reqwest::StatusCode, reqwest::Error> {
+    let client = reqwest::Client::new();
+    let url = format!("https://api.tracker.yandex.net/v2/issues/{}/worklog/{}", issue, worklog);
+    Ok(client.delete(url)
+        .header("X-Org-ID", org_id)
+        .header("Authorization", format!("OAuth {}", token))
+        .send()
+        .await?
+        .status()
+    )
+}
 
 pub async fn get_weekends(
     date_from: &String,
