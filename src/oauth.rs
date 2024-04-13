@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use oauth2::basic::{BasicClient, BasicErrorResponse, BasicTokenResponse};
 use oauth2::{AuthorizationCode, AuthUrl, ClientId, ClientSecret, RedirectUrl, RequestTokenError, TokenUrl};
-use oauth2::reqwest::{async_http_client, Error};
+use oauth2::reqwest::{async_http_client, HttpClientError};
 use crate::Config;
 use crate::models::UserData;
 
@@ -19,7 +19,7 @@ pub fn initialize_oauth_client(config: &Config) -> BasicClient {
 }
 
 pub async fn get_token_result(oauth_client: &Arc<BasicClient>, code: &str)
-    -> Result<BasicTokenResponse, RequestTokenError<Error<reqwest::Error>, BasicErrorResponse>> {
+    -> Result<BasicTokenResponse, RequestTokenError<HttpClientError, BasicErrorResponse>> {
     oauth_client
         .exchange_code(AuthorizationCode::new(code.to_string()))
         .request_async(async_http_client)
