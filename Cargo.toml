@@ -10,7 +10,7 @@ actix-web = "^4.5.1"
 derive_more = "^0.99.17"
 chrono = { version = "^0.4.38", features = ["serde"] }
 diesel = { version = "^2.1.6", features = ["sqlite", "returning_clauses_for_sqlite_3_35", "r2d2", "chrono"] }
-serde = { version = "^1.0.199", features = ["derive"] }
+serde = { version = "^1.0.200", features = ["derive"] }
 reqwest = { version = "^0.12.4", features = ["json"] }
 iso8601-duration = {version = "^0.2.0", features = ["chrono", "serde"]}
 serde_json = "^1.0.116"
