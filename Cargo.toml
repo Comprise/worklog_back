@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-web = "^4.5.1"
+actix-web = "^4.6.0"
 derive_more = "^0.99.17"
 chrono = { version = "^0.4.38", features = ["serde"] }
 diesel = { version = "^2.1.6", features = ["sqlite", "returning_clauses_for_sqlite_3_35", "r2d2", "chrono"] }
